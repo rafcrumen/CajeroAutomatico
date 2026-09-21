@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Business/Business/Business.csproj" />
+  <Project Path="CajeroAutomatico/CajeroAutomatico.csproj" Id="95f58680-6287-40f2-bfa2-107b71acbadb" />
+  <Project Path="Repository/Repository/Repository.csproj" />
+</Solution>

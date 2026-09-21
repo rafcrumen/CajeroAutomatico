@@ -1,0 +1,6 @@
+@CajeroAutomatico_HostAddress = http://localhost:5038
+
+GET {{CajeroAutomatico_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
