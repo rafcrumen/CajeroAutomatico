@@ -58,18 +58,38 @@ namespace Business
             retiro.Id = new Guid();
             retiro.Dinero = new List<Dinero>();
             var dineroExistente = dinero.FindAll(d => d.Existencia > 0).OrderByDescending(d => d.Denominacion);
-            foreach (var d in dineroExistente)
-            {
-                Dinero denominacionAplicada = new Dinero { Id = d.Id, Denominacion = d.Denominacion, Existencia = 0 };
-                while (montoRetiro > 0 && montoRetiro >= (d.Denominacion * d.Existencia))
+            var saldoActual  = dineroExistente.Sum(d => d.Denominacion * d.Existencia);
+            decimal resto;
+            Dinero denominacionAplicada;
+            //do
+            //{
+                //3875       1000 = 3     875        
+                foreach (var d in dineroExistente)
                 {
-                    montoRetiro -= d.Denominacion;
-                    d.Existencia--;
-                    denominacionAplicada.Existencia++;
+                    if (montoRetiro > 0 && montoRetiro >= d.Denominacion && d.Denominacion * d.Existencia >= montoRetiro)
+                    {
+                        resto = montoRetiro % d.Denominacion;
+                        denominacionAplicada = new Dinero { Id = d.Id, 
+                                                            Denominacion = d.Denominacion, 
+                                                            Existencia = (int)((montoRetiro - resto) / d.Denominacion) };
+                        montoRetiro %= d.Denominacion;
+                        retiro.Dinero.Add(denominacionAplicada);
+                    }
                 }
-                if (denominacionAplicada.Existencia > 0)    
-                    retiro.Dinero.Add(denominacionAplicada);
-            }
+            //} while (montoRetiro > 0);
+            
+            //foreach (var d in dineroExistente)
+            //{
+                 //denominacionAplicada = new Dinero { Id = d.Id, Denominacion = d.Denominacion, Existencia = 0 };
+                //while (montoRetiro > 0 && montoRetiro >= (d.Denominacion * d.Existencia))
+                //{
+                //    montoRetiro -= d.Denominacion;
+                //    d.Existencia--;
+                //    denominacionAplicada.Existencia++;
+                //}
+                //if (denominacionAplicada.Existencia > 0)    
+                    //retiro.Dinero.Add(denominacionAplicada);
+            //}
 
             return retiro;
         }

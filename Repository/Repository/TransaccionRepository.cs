@@ -28,7 +28,8 @@ namespace Repository
                 Monto = retiro.SaldoInicial - retiro.SaldoFinal
             };
             _context.Transacciones.Add(transaccion);
-            foreach(Dinero din in retiro.Dinero)
+            _context.SaveChanges();
+            foreach (Dinero din in retiro.Dinero)
             {
                 TransaccionDetalle detalle = new TransaccionDetalle
                 {
@@ -37,21 +38,21 @@ namespace Repository
                     Cantidad = din.Existencia,
                     Monto = din.Denominacion * din.Existencia
                 };
-                var dineroExistente = _context.Dineros.FirstOrDefault(x => x.Denominacion == din.Denominacion);
+                var dineroExistente = _context.Dineros.FirstOrDefault(x => x.Id == din.Id);
                 if (dineroExistente != null)
                 {
                     dineroExistente.Existencia -= din.Existencia;
                 }
                 _context.TransaccionDetalles.Add(detalle);
             }
-            foreach (var d in retiro.Dinero)
-            {
-                var dineroExistente = _context.Dineros.FirstOrDefault(x => x.Denominacion == d.Denominacion);
-                if (dineroExistente != null)
-                {
-                    dineroExistente.Existencia -= d.Existencia;
-                }
-            }
+            //foreach (var d in retiro.Dinero)
+            //{
+            //    var dineroExistente = _context.Dineros.FirstOrDefault(x => x.Denominacion == d.Denominacion);
+            //    if (dineroExistente != null)
+            //    {
+            //        dineroExistente.Existencia -= d.Existencia;
+            //    }
+            //}
         }
 
         List<Dinero> ITransaccionRepository.GetDinero()
